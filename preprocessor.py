@@ -1,3 +1,4 @@
+#- * - coding: utf - 8 -*-
 import codecs
 
 
@@ -6,9 +7,9 @@ def load_files():
     neg_lex = n.readlines()
     n.close()
     p = codecs.open("PosLex.csv", "r", "utf-8")
-    pos_lex = n.readlines()
+    pos_lex = p.readlines()
     p.close()
-    stop = codecs.open("GrStemmer.txt", "r", "utf-8")
+    stop = codecs.open("greekstopwords.txt", "r", "utf-8")
     stopwords = stop.readlines()
     stop.close()
     return neg_lex, pos_lex, stopwords
@@ -26,6 +27,6 @@ def load_tweets(filename="tweets.csv"):
     return tweets_list
 
 
-def preprocess(tweets):
+def preprocess(tweets,stemming_lex):
     pass
 
