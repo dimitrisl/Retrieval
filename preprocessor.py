@@ -1,5 +1,7 @@
 #- * - coding: utf - 8 -*-
 import codecs
+import nltk
+
 
 
 def load_files():
@@ -27,6 +29,15 @@ def load_tweets(filename="tweets.csv"):
     return tweets_list
 
 
-def preprocess(tweets,stemming_lex):
-    pass
+def preprocess(get_tweets, stopwords):
+    tweets = []
+    for tweet in get_tweets:
+        intermediate = u""
+        for words in nltk.word_tokenize(tweet):
+            x = words.upper()
+            print x
+            if x not in set(stopwords):
+                x += x
+        tweets.append(intermediate)
+    return tweets
 
