@@ -1,7 +1,16 @@
 #- * - coding: utf - 8 -*-
 import codecs
-import nltk
+from spacy.en import English
+import unicodedata
+import copy
 
+
+def remove_accents(text, method='unicode'):
+    text =text
+    if method == 'unicode':
+        back =''.join(c for c in unicodedata.normalize('NFKD', text)
+                       if not unicodedata.combining(c))
+        return back
 
 
 def load_files():
@@ -29,15 +38,34 @@ def load_tweets(filename="tweets.csv"):
     return tweets_list
 
 
+def rem_stopwords(get_tweets, stopwords):
+    parallel = copy.deepcopy(get_tweets)
+    to_be_kept = []
+    for i in range(len(parallel)):
+        intermediate = []
+        for j in range(len(parallel[i])):
+            parallel[i][j] = remove_accents(parallel[i][j])
+            for stop in stopwords:
+                if parallel[i][j].upper() == stop.strip():
+                    parallel[i][j] = "deleted"
+                    break
+            if parallel[i][j] != "deleted":
+                intermediate.append(get_tweets[i][j])
+        to_be_kept.append(intermediate)
+    return to_be_kept
+
+
 def preprocess(get_tweets, stopwords):
     tweets = []
+    nlp = English()
     for tweet in get_tweets:
-        intermediate = u""
-        for words in nltk.word_tokenize(tweet):
-            x = words.upper()
-            print x
-            if x not in set(stopwords):
-                x += x
+        tokenized = nlp(tweet).sents.next()
+        intermediate = []
+        for token in tokenized:
+            if not (token.is_digit or token.is_punct or token.like_url or token.like_email or token.is_space):
+                token = unicode(token)
+                intermediate.append(token)
         tweets.append(intermediate)
+    tweets = rem_stopwords(tweets, stopwords)
     return tweets
 
