@@ -1,6 +1,6 @@
-#- * - coding: utf - 8 -*-
-from preprocessor import load_tweets
-from preprocessor import load_files
+# -*- coding: cp1253 -*-
+from input_files import load_tweets
+from input_files import load_files
 from preprocessor import preprocess
 
 

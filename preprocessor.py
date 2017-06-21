@@ -1,8 +1,19 @@
 #- * - coding: utf - 8 -*-
-import codecs
-from spacy.en import English
+import nltk
 import unicodedata
 import copy
+import string
+import re
+from nltk.tokenize import RegexpTokenizer
+from stemmer import stem
+
+
+def sanitize(token):
+    token = token.translate(dict.fromkeys(ord(c) for c in string.punctuation))
+    if (token in string.punctuation) or token.isdigit():
+        return ""
+    return token
+
 
 
 def remove_accents(text, method='unicode'):
@@ -11,31 +22,6 @@ def remove_accents(text, method='unicode'):
         back =''.join(c for c in unicodedata.normalize('NFKD', text)
                        if not unicodedata.combining(c))
         return back
-
-
-def load_files():
-    n = codecs.open("NegLex.csv", "r", "utf-8")
-    neg_lex = n.readlines()
-    n.close()
-    p = codecs.open("PosLex.csv", "r", "utf-8")
-    pos_lex = p.readlines()
-    p.close()
-    stop = codecs.open("greekstopwords.txt", "r", "utf-8")
-    stopwords = stop.readlines()
-    stop.close()
-    return neg_lex, pos_lex, stopwords
-
-
-def load_tweets(filename="tweets.csv"):
-    f = codecs.open(filename, "r", 'utf-8')#all the tweets
-    fr = f.readline()
-    tweets_list = []
-    while fr != "":
-        if u"****τσίου****" not in fr:
-            tweets_list.append(fr)
-        fr = f.readline()
-    print "We have %s tweets" % len(tweets_list)
-    return tweets_list
 
 
 def rem_stopwords(get_tweets, stopwords):
@@ -50,20 +36,23 @@ def rem_stopwords(get_tweets, stopwords):
                     parallel[i][j] = "deleted"
                     break
             if parallel[i][j] != "deleted":
-                intermediate.append(get_tweets[i][j])
+                intermediate.append(stem(parallel[i][j].upper()))
+                print intermediate[-1]
         to_be_kept.append(intermediate)
     return to_be_kept
 
 
 def preprocess(get_tweets, stopwords):
     tweets = []
-    nlp = English()
+    counter = 0
     for tweet in get_tweets:
-        tokenized = nlp(tweet).sents.next()
+        tweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', tweet) # remove the url from the string
+        tokenizer = RegexpTokenizer(r'\w+')
+        tokenized = tokenizer.tokenize(tweet)
         intermediate = []
         for token in tokenized:
-            if not (token.is_digit or token.is_punct or token.like_url or token.like_email or token.is_space):
-                token = unicode(token)
+            token = sanitize(token)
+            if (token not in string.ascii_letters) and token != "":
                 intermediate.append(token)
         tweets.append(intermediate)
     tweets = rem_stopwords(tweets, stopwords)
