@@ -4,17 +4,27 @@ import codecs
 import os
 
 
+def read_n_list(file_object):
+    lista = []
+    line = file_object.readline().strip()
+    while line != "":
+        lista.append(line)
+        line = file_object.readline().strip()
+    return lista
+
 def load_files():
     n = codecs.open("files%sNegLex.csv" % os.sep, "r", "utf-8")
-    neg_lex = n.readlines()
+    n = codecs.open("files%sNegLex.csv" % os.sep, "r", "utf-8")
+    neg_lex = read_n_list(n)
     n.close()
     p = codecs.open("files%sPosLex.csv" % os.sep, "r", "utf-8")
-    pos_lex = p.readlines()
+    pos_lex = read_n_list(p)
     p.close()
     stop = codecs.open("files%sgreekstopwords.txt" % os.sep, "r", "utf-8")
     stopwords = stop.readlines()
+
     stop.close()
-    return neg_lex, pos_lex, stopwords
+    return neg_lex[1:], pos_lex[1:], stopwords
 
 
 def load_tweets(filename="files%stweets.csv" % os.sep):

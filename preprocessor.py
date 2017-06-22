@@ -1,5 +1,4 @@
 #- * - coding: utf - 8 -*-
-import nltk
 import unicodedata
 import copy
 import string
@@ -8,12 +7,18 @@ from nltk.tokenize import RegexpTokenizer
 from stemmer import stem
 
 
+def build_voc(neg_lex, pos_lex):
+    stemmed_voc = {}
+    for line in neg_lex+pos_lex:
+        stemmed_voc[(line.split(",")[-1])] = line.split(",")[-2]
+    return stemmed_voc
+
+
 def sanitize(token):
     token = token.translate(dict.fromkeys(ord(c) for c in string.punctuation))
     if (token in string.punctuation) or token.isdigit():
         return ""
     return token
-
 
 
 def remove_accents(text, method='unicode'):
@@ -37,7 +42,6 @@ def rem_stopwords(get_tweets, stopwords):
                     break
             if parallel[i][j] != "deleted":
                 intermediate.append(stem(parallel[i][j].upper()))
-                print intermediate[-1]
         to_be_kept.append(intermediate)
     return to_be_kept
 
