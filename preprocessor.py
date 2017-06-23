@@ -8,7 +8,7 @@ from stemmer import stem
 from collections import Counter
 
 
-def build_voc(list_of_tokens, minimum_df):
+def build_voc(list_of_tokens, minimum_df=10):
     words = [num for elem in list_of_tokens for num in elem]
     words = Counter(words)
     print('Building vocabulary from {0} tokens'.format(len(words.keys())))
