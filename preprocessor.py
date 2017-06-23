@@ -5,13 +5,18 @@ import string
 import re
 from nltk.tokenize import RegexpTokenizer
 from stemmer import stem
+from collections import Counter
 
 
-def build_voc(neg_lex, pos_lex):
-    stemmed_voc = {}
-    for line in neg_lex+pos_lex:
-        stemmed_voc[(line.split(",")[-1])] = line.split(",")[-2]
-    return stemmed_voc
+def build_voc(list_of_tokens, minimum_df):
+    words = [num for elem in list_of_tokens for num in elem]
+    words = Counter(words)
+    print('Building vocabulary from {0} tokens'.format(len(words.keys())))
+    for word in words.keys():
+        if words[word] <= minimum_df:
+            del words[word]
+    print('Vocabulary composed of {0} tokens'.format(len(words.keys())))
+    return words
 
 
 def sanitize(token):
@@ -41,14 +46,13 @@ def rem_stopwords(get_tweets, stopwords):
                     parallel[i][j] = "deleted"
                     break
             if parallel[i][j] != "deleted":
-                intermediate.append(stem(parallel[i][j].upper()))
+                intermediate.append(stem(parallel[i][j].upper())) #there should be stem here.
         to_be_kept.append(intermediate)
     return to_be_kept
 
 
 def preprocess(get_tweets, stopwords):
     tweets = []
-    counter = 0
     for tweet in get_tweets:
         tweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', tweet) # remove the url from the string
         tokenizer = RegexpTokenizer(r'\w+')
