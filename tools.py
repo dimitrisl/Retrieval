@@ -1,6 +1,6 @@
 from __future__ import division
 import numpy as np
-from scipy import linalg, spatial
+from scipy import linalg
 from math import log
 
 
@@ -36,7 +36,10 @@ def svdcal(a):
     U, S, V = linalg.svd(a)
     return U, S, V
 
+def normalizematrix(A):
+    norm_vector = linalg.norm(A, axis=1)
+    normalized_matrix = np.divide(A, norm_vector)
+    return normalized_matrix
+
 def knn(U, K):
     pass
-    #for
-    #eucl_dist = spatial.distance.euclidean(u,v)

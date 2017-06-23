@@ -19,17 +19,17 @@ tweets = preprocess(get_tweets, stopwords)
 vocabulary = build_voc(tweets)
 
 
-X = termTweet(vocabulary,tweets)  # calculate Term-tweets Matrix(mxn)
+X = termTweet(vocabulary, tweets)  # calculate Term-tweets Matrix(mxn)
 C = corrMatrix(X)  # calculate corrMatrix(mxm)
 PPMI = ppmi(C)  # calculate PPMI matrix
 print 'Matrix PPMI is of shape: ', PPMI.shape
 
+# Calculate SVD matrices
 U, S, V = svdcal(PPMI)
 
-#after normalizing it
-#we have to check if i,j word belong to a negative or a positive cluster (knn)
-#i assume it's the pmi
-
 print 'Matrix U is of shape: ', U.shape
+
+# normalize with euclidean norm the matrix U of the vector embeddings
+Uk = normalizematrix(U)
 
 print time.time() - start
