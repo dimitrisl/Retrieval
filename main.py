@@ -21,17 +21,15 @@ vocabulary = build_voc(tweets)
 
 X = termTweet(vocabulary,tweets)  # calculate Term-tweets Matrix(mxn)
 C = corrMatrix(X)  # calculate corrMatrix(mxm)
-PMI = ppmi(C)  # calculate PPMI matrix
-print 'Matrix PMI is of shape: ', PMI.shape
+PPMI = ppmi(C)  # calculate PPMI matrix
+print 'Matrix PPMI is of shape: ', PPMI.shape
 
-#U, S, V = svdcal(PPMI)
+U, S, V = svdcal(PPMI)
 
 #after normalizing it
 #we have to check if i,j word belong to a negative or a positive cluster (knn)
 #i assume it's the pmi
 
-#print 'Matrix PPMI is of shape: ', U.shape
-for line in tweets[1]:
-    print line
+print 'Matrix U is of shape: ', U.shape
 
 print time.time() - start
