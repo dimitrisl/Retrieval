@@ -1,7 +1,13 @@
 #- * - coding: utf - 8 -*-
-
 import codecs
 import os
+
+
+def get_the_stem(em_lexicon):
+    back = []
+    for line in em_lexicon:
+        back.append(line.split(",")[-1])
+    return back
 
 
 def read_n_list(file_object):
@@ -12,8 +18,8 @@ def read_n_list(file_object):
         line = file_object.readline().strip()
     return lista
 
+
 def load_files():
-    n = codecs.open("files%sNegLex.csv" % os.sep, "r", "utf-8")
     n = codecs.open("files%sNegLex.csv" % os.sep, "r", "utf-8")
     neg_lex = read_n_list(n)
     n.close()

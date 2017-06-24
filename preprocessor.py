@@ -1,6 +1,5 @@
 #- * - coding: utf - 8 -*-
 import unicodedata
-import copy
 import string
 import re
 from nltk.tokenize import RegexpTokenizer
@@ -11,12 +10,12 @@ from collections import Counter
 def build_voc(list_of_tokens, minimum_df=10):
     words = [num for elem in list_of_tokens for num in elem]
     words = Counter(words)
-    print('Building vocabulary from {0} tokens'.format(len(words.keys())))
+    print 'Building vocabulary from {0} tokens'.format(len(words.keys()))
     for word in words.keys():
         if words[word] <= minimum_df:
             del words[word]
-    print('Vocabulary composed of {0} tokens'.format(len(words.keys())))
-    return words
+    print 'Vocabulary composed of {0} tokens'.format(len(words.keys()))
+    return words.keys()
 
 
 def sanitize(token):
@@ -27,26 +26,23 @@ def sanitize(token):
 
 
 def remove_accents(text, method='unicode'):
-    text =text
     if method == 'unicode':
-        back =''.join(c for c in unicodedata.normalize('NFKD', text)
-                       if not unicodedata.combining(c))
+        back =''.join(c for c in unicodedata.normalize('NFKD', text) if not unicodedata.combining(c))
         return back
 
 
 def rem_stopwords(get_tweets, stopwords):
-    parallel = copy.deepcopy(get_tweets)
     to_be_kept = []
-    for i in range(len(parallel)):
+    for i in range(len(get_tweets)):
         intermediate = []
-        for j in range(len(parallel[i])):
-            parallel[i][j] = remove_accents(parallel[i][j])
+        for j in range(len(get_tweets[i])):
+            get_tweets[i][j] = remove_accents(get_tweets[i][j])
             for stop in stopwords:
-                if parallel[i][j].upper() == stop.strip():
-                    parallel[i][j] = "deleted"
+                if get_tweets[i][j].upper() == stop.strip():
+                    get_tweets[i][j] = "deleted"
                     break
-            if parallel[i][j] != "deleted":
-                intermediate.append(stem(parallel[i][j].upper())) #there should be stem here.
+            if get_tweets[i][j] != "deleted":
+                intermediate.append(stem(get_tweets[i][j].upper())) #there should be stem here.
         to_be_kept.append(intermediate)
     return to_be_kept
 
