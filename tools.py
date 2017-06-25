@@ -1,6 +1,6 @@
 from __future__ import division
 import numpy as np
-from scipy import linalg
+from scipy.sparse import linalg
 from math import log
 import codecs
 
@@ -34,13 +34,13 @@ def ppmi(C):
     return PPMI
 
 
-def svdcal(a):
-    U, S, V = linalg.svd(a)
+def svdcal(a, k):
+    U, S, V = linalg.svds(a, k)
     return U, S, V
 
 
 def normalizematrix(A):
-    norm_vector = linalg.norm(A, axis=1)
+    norm_vector = np.linalg.norm(A, axis=1)
     normalized_matrix = np.divide(A, norm_vector)
     return normalized_matrix
 
