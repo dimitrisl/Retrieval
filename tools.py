@@ -2,6 +2,7 @@ from __future__ import division
 import numpy as np
 from scipy import linalg
 from math import log
+import codecs
 
 
 def termTweet(words, tweets):
@@ -69,10 +70,9 @@ def knn(U, voc, stem_pos_lex, stem_neg_lex, K):
             temp = to_be_visited[0]
             pos_lex[temp] = []
             indexes = get_top_k_distances(U, to_be_visited[0], to_be_visited + poped, K)
-            # remove all the indexes that are clustered to the positive from now on.
-            to_be_visited = list(set(to_be_visited) - set(indexes))
-            # fill this field with all the indexes of the lines we need
-            pos_lex[temp].extend(indexes)
+            to_be_visited = list(set(to_be_visited) - set(indexes)) # remove all the indexes that are clustered to the positive from now on.
+            pos_lex[temp].extend(indexes) # fill this field with all the indexes of the lines we need
+            poped = list(set(poped) - set(indexes))
             del to_be_visited[0]
         elif voc[to_be_visited[0]] in stem_neg_lex:
             temp = to_be_visited[0]
@@ -80,12 +80,45 @@ def knn(U, voc, stem_pos_lex, stem_neg_lex, K):
             indexes = get_top_k_distances(U, to_be_visited[0], to_be_visited + poped, K)
             to_be_visited = list(set(to_be_visited) - set(indexes))
             neg_lex[temp].extend(indexes)
+            poped = list(set(poped) - set(indexes))
             del to_be_visited[0]
         else:
             poped.append(to_be_visited[0])
             del to_be_visited[0]
         print len(to_be_visited)
     return pos_lex, neg_lex
+
+
+def not_in_lex(un_lex, to_lex, vocabulary):
+    counter = 0
+    back = {}
+    words_not_in_lexicon = []
+    for central_word in un_lex.keys():
+        back[central_word] = []
+        for index in un_lex[central_word]:
+            back[central_word].append(vocabulary[index])
+            if vocabulary[index] not in to_lex:
+                words_not_in_lexicon.append(vocabulary[index])
+                counter += 1
+    return back, counter, words_not_in_lexicon
+
+
+def write_file(lexicon, lex_type, flag="old"):
+    if flag == "old":
+        for term in lexicon.keys():
+            name = "Ex%s(%s).txt" % (lex_type, term)
+            f = codecs.open(name, "w", encoding="utf-8")
+            for word in lexicon[term]:
+                word = word + "\n"
+                f.write(word)
+            f.close()
+    else:
+        for name in lexicon.keys():
+            f = codecs.open(name, "w", encoding="utf-8")
+            for words in lexicon[name]:
+                words = words+"\n"
+                f.write(words)
+            f.close()
 
 
 def mean_value(positives, negatives, num_of_terms):

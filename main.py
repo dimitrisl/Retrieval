@@ -31,7 +31,7 @@ U, S, V = svdcal(PPMI)
 
 print 'Matrix U is of shape: ', U.shape
 
-embedding_type = raw_input('Choose type of embedding matrix E(state the number):1)Å=Uk 2) E=Uk.T*Sk 3) E=Uk.T*Sk^1/2: ')
+embedding_type = input('Choose type of embedding matrix E(state the number):1)Å=Uk 2) E=Uk.T*Sk 3) E=Uk.T*Sk^1/2: ')
 if embedding_type == 1:
     E = normalizematrix(U)
 elif embedding_type == 2:
@@ -47,4 +47,17 @@ lex_pos, lex_ne = knn(E, vocabulary, stem_pos_lex, stem_neg_lex, 3)
 
 print "positive | negative"
 print len(lex_pos.keys()), len(lex_ne.keys())
+
+lex_ne, neg_counter, new_neg = not_in_lex(lex_ne, stem_neg_lex, vocabulary)
+print "%s negative words don't belong in the negative lexicon" % neg_counter
+lex_pos, pos_counter, new_pos = not_in_lex(lex_pos, stem_pos_lex, vocabulary)
+print "%s positive words don't belong in the positive lexicon" % pos_counter
+write_file(lex_ne, "Neg") # write the words to ExNeg
+write_file(lex_pos, "Pos")
+##################################################
+new = dict()
+new["newNeg.txt"] = new_neg
+new["newPos.txt"] = new_pos
+write_file(new, "New", "new")
+
 print time.time() - start
