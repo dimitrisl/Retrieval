@@ -41,14 +41,14 @@ def svdcal(a, k):
 
 def normalizematrix(A):
     norm_vector = np.linalg.norm(A, axis=1)
-    normalized_matrix = np.divide(A, norm_vector)
+    normalized_matrix = A / norm_vector.reshape((norm_vector.shape[0], 1))
     return normalized_matrix
 
 
 def get_top_k_distances(U, counter, to_be_visited, K):
     distances = []
     for index in to_be_visited:
-        diff = linalg.norm((U[counter] - U[index]))
+        diff = np.linalg.norm((U[counter] - U[index]))
         distances.append((diff, index))
 
     distances.sort()
@@ -85,7 +85,6 @@ def knn(U, voc, stem_pos_lex, stem_neg_lex, K):
         else:
             poped.append(to_be_visited[0])
             del to_be_visited[0]
-        print len(to_be_visited)
     return pos_lex, neg_lex
 
 

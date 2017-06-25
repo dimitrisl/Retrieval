@@ -13,13 +13,13 @@ neg_lex, pos_lex, stopwords = load_files()
 
 stem_pos_lex = get_the_stem(pos_lex)# get the stemmed version of the word
 stem_neg_lex = get_the_stem(neg_lex)
-
-get_tweets = load_tweets() # it takes the filename as an argument
+# it takes the filename as an argument
+get_tweets = load_tweets()
 # sanitize tweets
 tweets = preprocess(get_tweets, stopwords)
 print "pre-processing done"
 
-vocabulary = build_voc(tweets, 5) # we use a very small vocabulary on purpose.
+vocabulary = build_voc(tweets, 10)
 
 X = termTweet(vocabulary, tweets)  # calculate Term-tweets Matrix(mxn)
 C = corrMatrix(X)  # calculate corrMatrix(mxm)
@@ -27,7 +27,7 @@ PPMI = ppmi(C)  # calculate PPMI matrix
 print 'Matrix PPMI is of shape: ', PPMI.shape
 
 # Calculate SVD matrices
-U, S, V = svdcal(PPMI, 2)
+U, S, V = svdcal(PPMI, 300)
 
 print 'Matrix U is of shape: ', U.shape
 
@@ -35,7 +35,7 @@ embedding_type = input('Choose type of embedding matrix E(state the number):1)Å=
 if embedding_type == 1:
     E = normalizematrix(U)
 elif embedding_type == 2:
-    E = U.T.dot(S)
+    E = U.dot(S)
     E = normalizematrix(E)
 elif embedding_type == 3:
     E = U.T.dot(np.sqrt(S))
