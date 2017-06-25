@@ -19,7 +19,7 @@ get_tweets = load_tweets() # it takes the filename as an argument
 tweets = preprocess(get_tweets, stopwords)
 print "pre-processing done"
 
-vocabulary = build_voc(tweets, 80) # we use a very small vocabulary on purpose.
+vocabulary = build_voc(tweets,50) # we use a very small vocabulary on purpose.
 
 X = termTweet(vocabulary, tweets)  # calculate Term-tweets Matrix(mxn)
 C = corrMatrix(X)  # calculate corrMatrix(mxm)
