@@ -31,10 +31,19 @@ U, S, V = svdcal(PPMI)
 
 print 'Matrix U is of shape: ', U.shape
 
-# normalize with euclidean norm the matrix U of the vector embeddings
-Uk = normalizematrix(U)
+embedding_type = raw_input('Choose type of embedding matrix E(state the number):1)Å=Uk 2) E=Uk.T*Sk 3) E=Uk.T*Sk^1/2: ')
+if embedding_type == 1:
+    E = normalizematrix(U)
+elif embedding_type == 2:
+    E = U.T.dot(S)
+    E = normalizematrix(E)
+elif embedding_type == 3:
+    E = U.T.dot(np.sqrt(S))
+    E = normalizematrix(E)
+
+
 #start knn
-lex_pos, lex_ne = knn(Uk, vocabulary, stem_pos_lex, stem_neg_lex, 3)
+lex_pos, lex_ne = knn(E, vocabulary, stem_pos_lex, stem_neg_lex, 3)
 
 print "positive | negative"
 print len(lex_pos.keys()), len(lex_ne.keys())
