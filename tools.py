@@ -22,7 +22,6 @@ def ppmi(C):
     Ci = np.sum(C, axis=1)
     Cj = np.sum(C, axis=0)
     N = np.sum(Ci)
-    #CiCj = Ci.dot(Cj)
     PPMI = np.zeros((C.shape[0], C.shape[1]))
 
     for i in range(0, C.shape[0]):
@@ -70,8 +69,10 @@ def knn(U, voc, stem_pos_lex, stem_neg_lex, K):
             temp = to_be_visited[0]
             pos_lex[temp] = []
             indexes = get_top_k_distances(U, to_be_visited[0], to_be_visited + poped, K)
-            to_be_visited = list(set(to_be_visited) - set(indexes)) # remove all the indexes that are clustered to the positive from now on.
-            pos_lex[temp].extend(indexes) # fill this field with all the indexes of the lines we need
+            # remove all the indexes that are clustered to the positive from now on.
+            to_be_visited = list(set(to_be_visited) - set(indexes))
+            # fill this field with all the indexes of the lines we need
+            pos_lex[temp].extend(indexes)
             poped = list(set(poped) - set(indexes))
             del to_be_visited[0]
         elif voc[to_be_visited[0]] in stem_neg_lex:

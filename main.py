@@ -27,18 +27,20 @@ PPMI = ppmi(C)  # calculate PPMI matrix
 print 'Matrix PPMI is of shape: ', PPMI.shape
 
 # Calculate SVD matrices
-U, S, V = svdcal(PPMI, 300)
+U, s, V = svdcal(PPMI, 300)
+# Make s diagonal
+s = np.diag(s)
 
 print 'Matrix U is of shape: ', U.shape
 
-embedding_type = input('Choose type of embedding matrix E(state the number):1)Å=Uk 2) E=Uk.T*Sk 3) E=Uk.T*Sk^1/2: ')
+embedding_type = input('Choose type of embedding matrix E(state the number):1)E=Uk 2) E=Uk.T*Sk 3) E=Uk.T*Sk^1/2: ')
 if embedding_type == 1:
     E = normalizematrix(U)
 elif embedding_type == 2:
-    E = U.dot(S)
+    E = U.dot(s)
     E = normalizematrix(E)
 elif embedding_type == 3:
-    E = U.T.dot(np.sqrt(S))
+    E = U.dot(np.sqrt(s))
     E = normalizematrix(E)
 
 
@@ -59,5 +61,7 @@ new = dict()
 new["newNeg.txt"] = new_neg
 new["newPos.txt"] = new_pos
 write_file(new, "New", "new")
+mean_pos, mean_neg = mean_value(pos_counter, neg_counter, len(vocabulary))
+print 'Mean values for NP is %s and for NN is %s ' % (mean_pos, mean_neg)
 
 print time.time() - start
