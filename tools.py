@@ -67,22 +67,22 @@ def knn(U, voc, stem_pos_lex, stem_neg_lex, K):
     while to_be_visited:
         if voc[to_be_visited[0]] in stem_pos_lex:
             temp = to_be_visited[0]
+            del to_be_visited[0]
             pos_lex[temp] = []
-            indexes = get_top_k_distances(U, to_be_visited[0], to_be_visited + poped, K)
+            indexes = get_top_k_distances(U, temp, to_be_visited + poped, K)
             # remove all the indexes that are clustered to the positive from now on.
             to_be_visited = list(set(to_be_visited) - set(indexes))
             # fill this field with all the indexes of the lines we need
             pos_lex[temp].extend(indexes)
             poped = list(set(poped) - set(indexes))
-            del to_be_visited[0]
         elif voc[to_be_visited[0]] in stem_neg_lex:
             temp = to_be_visited[0]
+            del to_be_visited[0]
             neg_lex[temp] = []
-            indexes = get_top_k_distances(U, to_be_visited[0], to_be_visited + poped, K)
+            indexes = get_top_k_distances(U, temp, to_be_visited + poped, K)
             to_be_visited = list(set(to_be_visited) - set(indexes))
             neg_lex[temp].extend(indexes)
             poped = list(set(poped) - set(indexes))
-            del to_be_visited[0]
         else:
             poped.append(to_be_visited[0])
             del to_be_visited[0]
